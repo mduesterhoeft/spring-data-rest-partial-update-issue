@@ -28,6 +28,11 @@ repositories {
     maven { url "https://repo.spring.io/milestone" }
 }
 
+
+configurations {
+    instrument {description 'classpath for instrument as java agent'}
+}
+
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-rest')
     compile('org.springframework.data:spring-data-rest-hal-browser')
@@ -40,7 +45,8 @@ dependencies {
     compile 'org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.1'
 
     runtime('com.h2database:h2')
-
+    // static code weaving
+    instrument("org.springframework:spring-instrument")
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
@@ -55,6 +61,14 @@ eclipse {
         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
     }
+}
+
+test {
+    jvmArgs "-javaagent:$configurations.instrument.singleFile"
+}
+
+bootRun {
+    jvmArgs "-javaagent:$configurations.instrument.singleFile"
 }
 
 task wrapper(type: Wrapper) {

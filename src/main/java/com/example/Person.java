@@ -1,6 +1,5 @@
 package com.example;
 
-import static javax.persistence.FetchType.EAGER;
 import static lombok.AccessLevel.NONE;
 
 import javax.persistence.Entity;
@@ -32,8 +31,8 @@ public class Person {
     @NonNull
     private String name;
 
-    @ManyToOne(fetch = EAGER, optional = false)
-    @JoinColumn(name = "CHILD_ID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "CHILD_ID")
     @NonNull
     private Child child;
 }
