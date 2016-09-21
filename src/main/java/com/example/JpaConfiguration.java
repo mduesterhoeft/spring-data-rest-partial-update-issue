@@ -4,16 +4,21 @@ import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.eclipse.persistence.config.PersistenceUnitProperties;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
-import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.transaction.jta.JtaTransactionManager;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -23,6 +28,12 @@ public class JpaConfiguration extends JpaBaseConfiguration {
 
     @Value("${spring.jpa.show-sql}")
     private boolean showSql;
+
+    public JpaConfiguration(DataSource dataSource,
+                                         JpaProperties jpaProperties,
+                                         ObjectProvider<JtaTransactionManager> jtaTransactionManagerProvider) {
+        super(dataSource, jpaProperties, jtaTransactionManagerProvider);
+    }
 
     protected AbstractJpaVendorAdapter createJpaVendorAdapter() {
         return new EclipseLinkJpaVendorAdapter();
